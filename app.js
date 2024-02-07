@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 console.log(process.env.SECRET);
 
 const express = require('express');
@@ -25,11 +27,12 @@ const app = express();
 //     console.log("Database connected.");
 // });
 
-
-const { MongoClient, ServerApiVersion } = require('mongodb');
-const { ConnectionString } = require('mongodb-connection-string-url'); // Add this import
+const { MongoClient } = require('mongodb');
+const { ConnectionString } = require('mongodb-connection-string-url');
 
 const dbUrl = process.env.DB_URL;
+
+console.log('DB_URL:', dbUrl);
 
 try {
     const connectionString = new ConnectionString(dbUrl);
@@ -42,19 +45,15 @@ const client = new MongoClient(dbUrl, { useNewUrlParser: true, useUnifiedTopolog
 
 async function run() {
     try {
-        // Connect the client to the server (optional starting in v4.7)
         await client.connect();
-        // Send a ping to confirm a successful connection
         await client.db("admin").command({ ping: 1 });
         console.log("Pinged your deployment. You successfully connected to MongoDB!");
     } finally {
-        // Ensures that the client will close when you finish/error
         await client.close();
     }
 }
 
 run().catch(console.dir);
-
 
 
 app.get('/', (req, res) => {

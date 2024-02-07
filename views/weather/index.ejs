@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css"
+    integrity="sha384-r4NyP46KrjDleawBgD5tp8Y7UzmLA05oM1iAEQ17CSuDqnUK2+k9luXQOfXJCJ4I" crossorigin="anonymous">
+<link rel="stylesheet" href="/stylesheets/weather.css">
+</head>
+
+<body class="d-flex text-center">
+<div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
+<header class="mb-auto">
+    <div>
+        <h3 class="float-md-left mb-0">Portfolio.</h3>
+        <nav class="nav nav-masthead justify-content-center float-md-right">
+            <a class="nav-link" aria-current="page" href="/">Home</a>
+            <a class="nav-link" href="/projects">Projects</a>
+            <a class="nav-link" href="/Contact">Contact</a>
+        </nav>
+    </div>
+</header>
+
+<body class="d-flex text-center">
+    <div class="cover-container d-flex w-70 h-70 p-3 mx-auto flex-column mt-4">
+        <h1 class="display-5 mb-3">What's the weather now?</h1>
+        <input class="form-control me-2" type="text" id="locationInput" placeholder="Enter a city">
+        <button class="btn btn-dark mt-3 mb-3" id="searchButton">Search</button>
+        <div class="weather-info">
+            <h2 class="display-5 mt-3 mb-3" id="location"></h2>
+            <p class="display-3" id="temperature"></p>
+            <p class="display-6" id="description"></p>
+        </div>
+    </div>
+    <script>
+        const apiKey = 'ee5b6caf22a0c0edad894410c4cff45b';
+const apiUrl = 'https://api.openweathermap.org/data/2.5/weather';
+
+const locationInput = document.getElementById('locationInput');
+const searchButton = document.getElementById('searchButton');
+const locationElement = document.getElementById('location');
+const temperatureElement = document.getElementById('temperature');
+const descriptionElement = document.getElementById('description');
+
+searchButton.addEventListener('click', () => {
+    const location = locationInput.value;
+    if (location) {
+        fetchWeather(location);
+    }
+});
+
+function fetchWeather(location) {
+    const url = `${apiUrl}?q=${location}&appid=${apiKey}&units=metric`;
+
+    fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            locationElement.textContent = data.name;
+            temperatureElement.textContent = `${Math.round(data.main.temp)}°C`;
+            descriptionElement.textContent = data.weather[0].description;
+        })
+        .catch(error => {
+            console.error('Error fetching weather data:', error);
+        });
+}
+
+    </script>
+</body>
+</html>
+
+<footer class="mt-auto text-white-40">
+    <small><p>Portfolio by Kat Galkowska</p>
+        <p>&copy; 2024 </p></small>
+</footer>
+
+
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/js/bootstrap.min.js"
+integrity="sha384-oesi62hOLfzrys4LxRF63OJCXdXDipiYWBnvTl9Y9/TRlw5xlKIEHpNyvvDShgf/"
+crossorigin="anonymous"></script>

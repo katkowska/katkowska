@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tarot App</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css"
+    integrity="sha384-r4NyP46KrjDleawBgD5tp8Y7UzmLA05oM1iAEQ17CSuDqnUK2+k9luXQOfXJCJ4I" crossorigin="anonymous">
+<link rel="stylesheet" href="/stylesheets/tarot.css">
+</head>
+
+<body class="d-flex text-center">
+<div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
+<header class="mb-auto">
+    <div>
+        <h3 class="float-md-left mb-0">Portfolio.</h3>
+        <nav class="nav nav-masthead justify-content-center float-md-right">
+            <a class="nav-link" aria-current="page" href="/">Home</a>
+            <a class="nav-link" href="/projects">Projects</a>
+            <a class="nav-link" href="/Contact">Contact</a>
+        </nav>
+    </div>
+</header>
+
+    <div class="cover-container w-70 h-70 mx-auto flex-column mt-2">
+        <h1 class="lead">Tarot Draw</h1>
+        <h2 id="cardName"></h2>
+                <div id="cardDisplay">
+                    <img id="cardImage" src="" alt="">
+                    <p class="lead mt-3 mb-3" id="cardDescription"></p>
+                </div>
+                <button class="btn btn-dark btn-lg mb-3" id="drawCardButton">Draw a Card</button>
+    </div>
+
+<script>
+    const tarotDeck = [
+    { name: 'The Fool', description: 'New beginnings, spontaneity, and unpredictability.', nr: '0' },
+    { name: 'The Magician', description: 'Manifestation, resourcefulness, power.', nr: '1'},
+    { name: 'The High Priestess', description: 'Intuition, mystery, unconscious knowledge.', nr: '2'},
+    { name: 'The Empress', description: 'Fertility, nurturing, abundance.', nr: '3'},
+    { name: 'The Emperor', description: 'Authority, stability, structure.', nr: '4'},
+    { name: 'The Hierophant', description: 'Spiritual guidance, tradition, conformity.', nr: '5'},
+    { name: 'The Lovers', description: 'Harmony, relationships, choices.', nr: '6'},
+    { name: 'The Chariot', description: 'Determination, willpower, victory.', nr: '7'},
+    { name: 'Strength', description: 'Inner strength, courage, patience.', nr: '8'},
+    { name: 'The Hermit', description: 'Inner searching, solitude, guidance.', nr: '9'},
+    { name: 'Wheel of Fortune', description: 'Cycles, change, destiny.', nr: '10'},
+    { name: 'Justice', description: 'Fairness, balance, legal matters.', nr: '11'},
+    { name: 'The Hanged Man', description: 'Sacrifice, surrender, new perspective.', nr: '12'},
+    { name: 'Death', description: 'Transformation, endings, rebirth.', nr: '13'},
+    { name: 'Temperance', description: 'Balance, moderation, harmony.', nr: '14'},
+    { name: 'The Devil', description: 'Materialism, temptation, bondage.', nr: '15'},
+    { name: 'The Tower', description: 'Sudden change, upheaval, revelation.', nr: '16'},
+    { name: 'The Star', description: 'Hope, inspiration, spiritual insight.', nr: '17'},
+    { name: 'The Moon', description: 'Illusion, intuition, emotions.', nr: '18'},
+    { name: 'The Sun', description: 'Joy, success, vitality.', nr: '19'},
+    { name: 'Judgement', description: 'Reckoning, awakening, redemption.', nr: '20'},
+    { name: 'The World', description: 'Completion, fulfillment, wholeness.', nr: '21'},
+
+    // Wands
+    { name: 'Ace of Wands', description: 'New opportunities, inspiration, potential.', nr: '22' },
+    { name: 'Two of Wands', description: 'Planning, progress, future possibilities.', nr: '23' },
+    { name: 'Three of Wands', description: 'Expansion, foresight, collaboration.', nr: '24' },
+    { name: 'Four of Wands', description: 'Celebration, harmony, homecoming.', nr: '25' },
+    { name: 'Five of Wands', description: 'Conflict, competition, diversity.', nr: '26' },
+    { name: 'Six of Wands', description: 'Victory, recognition, confidence.', nr: '27' },
+    { name: 'Seven of Wands', description: 'Defensiveness, perseverance, standing tall.', nr: '28' },
+    { name: 'Eight of Wands', description: 'Swift action, progress, messages.', nr: '29' },
+    { name: 'Nine of Wands', description: 'Resilience, determination, strength.', nr: '30' },
+    { name: 'Ten of Wands', description: 'Burden, responsibility, completion.', nr: '31' },
+    { name: 'Page of Wands', description: 'Enthusiasm, exploration, free-spirit.', nr: '32' },
+    { name: 'Knight of Wands', description: 'Action, energy, adventurous spirit.', nr: '33' },
+    { name: 'Queen of Wands', description: 'Confidence, charisma, independence.', nr: '34' },
+    { name: 'King of Wands', description: 'Leadership, vision, inspiration.', nr: '35' },
+
+    // Cups
+    { name: 'Ace of Cups', description: 'Emotional beginnings, love, intuition.', nr: '36' },
+    { name: 'Two of Cups', description: 'Connection, partnership, mutual attraction.', nr: '37' },
+    { name: 'Three of Cups', description: 'Celebration, friendship, joy.', nr: '38' },
+    { name: 'Four of Cups', description: 'Contemplation, introspection, seeking more.', nr: '39' },
+    { name: 'Five of Cups', description: 'Loss, grief, disappointment.', nr: '40' },
+    { name: 'Six of Cups', description: 'Nostalgia, reunion, childhood memories.', nr: '41' },
+    { name: 'Seven of Cups', description: 'Choices, imagination, possibilities.', nr: '42' },
+    { name: 'Eight of Cups', description: 'Seeking deeper meaning, walking away.', nr: '43' },
+    { name: 'Nine of Cups', description: 'Wishes fulfilled, contentment, satisfaction.', nr: '44' },
+    { name: 'Ten of Cups', description: 'Harmony, happiness, emotional fulfillment.', nr: '45' },
+    { name: 'Page of Cups', description: 'Creativity, intuition, new perspectives.', nr: '46' },
+    { name: 'Knight of Cups', description: 'Romance, charm, emotional pursuit.', nr: '47' },
+    { name: 'Queen of Cups', description: 'Empathy, compassion, emotional support.', nr: '48' },
+    { name: 'King of Cups', description: 'Emotional balance, leadership, calmness.', nr: '49' },
+
+    // Swords
+    { name: 'Ace of Swords', description: 'Clarity, truth, mental breakthrough.', nr: '50' },
+    { name: 'Two of Swords', description: 'Balance, decisions, stalemate.', nr: '51' },
+    { name: 'Three of Swords', description: 'Heartbreak, sorrow, emotional pain.', nr: '52' },
+    { name: 'Four of Swords', description: 'Rest, recuperation, contemplation.', nr: '53' },
+    { name: 'Five of Swords', description: 'Conflict, defeat, winning at a cost.', nr: '54' },
+    { name: 'Six of Swords', description: 'Transition, moving on, mental clarity.', nr: '55' },
+    { name: 'Seven of Swords', description: 'Deception, trickery, hidden agendas.', nr: '56' },
+    { name: 'Eight of Swords', description: 'Restriction, self-imposed imprisonment.', nr: '57' },
+    { name: 'Nine of Swords', description: 'Anxiety, fear, nightmares.', nr: '58' },
+    { name: 'Ten of Swords', description: 'Endings, rock bottom, transformation.', nr: '59' },
+    { name: 'Page of Swords', description: 'Curiosity, new ideas, mental agility.', nr: '60' },
+    { name: 'Knight of Swords', description: 'Ambition, determination, assertiveness.', nr: '61' },
+    { name: 'Queen of Swords', description: 'Independence, wisdom, clear communication.', nr: '62' },
+    { name: 'King of Swords', description: 'Intellect, authority, analytical thinking.', nr: '63' },
+
+    // Pentacles
+    { name: 'Ace of Pentacles', description: 'Material opportunities, prosperity, new ventures.', nr: '64' },
+    { name: 'Two of Pentacles', description: 'Balance, adaptability, juggling priorities.', nr: '65' },
+    { name: 'Three of Pentacles', description: 'Teamwork, collaboration, skill mastery.', nr: '66' },
+    { name: 'Four of Pentacles', description: 'Security, stability, holding onto possessions.', nr: '67' },
+    { name: 'Five of Pentacles', description: 'Hard times, poverty, financial loss.', nr: '68' },
+    { name: 'Six of Pentacles', description: 'Generosity, charity, sharing wealth.', nr: '69' },
+    { name: 'Seven of Pentacles', description: 'Patience, investment, waiting for results.', nr: '70' },
+    { name: 'Eight of Pentacles', description: 'Diligence, craftsmanship, skill development.', nr: '71' },
+    { name: 'Nine of Pentacles', description: 'Luxury, self-sufficiency, enjoying success.', nr: '72' },
+    { name: 'Ten of Pentacles', description: 'Wealth, family, financial stability.', nr: '73' },
+    { name: 'Page of Pentacles', description: 'New opportunities, learning, practicality.', nr: '74' },
+    { name: 'Knight of Pentacles', description: 'Hard work, responsibility, reliability.', nr: '75' },
+    { name: 'Queen of Pentacles', description: 'Nurturing, abundance, practicality.', nr: '76' },
+    { name: 'King of Pentacles', description: 'Financial success, stability, mastery.', nr: '77' },
+    ];
+
+    function generateCard() {
+        const cardImage = document.getElementById('cardImage');
+        const cardName = document.getElementById('cardName');
+        const cardDescription = document.getElementById('cardDescription');
+
+        const randomIndex = Math.floor(Math.random() * tarotDeck.length);
+        const randomCard = tarotDeck[randomIndex];
+
+        cardImage.src = `https://gfx.tarot.com/images/site/decks/ethereal-visions/full_size/${randomCard.nr}.jpg`;
+        cardImage.alt = randomCard.name;
+
+        cardName.textContent = randomCard.name;
+        cardDescription.textContent = `${randomCard.description}`;
+    }
+    document.getElementById('drawCardButton').addEventListener('click', generateCard);
+</script>
+
+</body>
+</html>
+
+<footer class="mt-auto text-white-40">
+    <small>
+        <p>Portfolio by Kat Galkowska &copy; 2024 </p></small>
+</footer>
+
+
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/js/bootstrap.min.js"
+integrity="sha384-oesi62hOLfzrys4LxRF63OJCXdXDipiYWBnvTl9Y9/TRlw5xlKIEHpNyvvDShgf/"
+crossorigin="anonymous"></script>

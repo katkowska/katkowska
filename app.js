@@ -9,7 +9,6 @@ const flash = require('connect-flash');
 const ExpressError = require('./utils/ExpressError');
 const methodOverride = require('method-override');
 const helmet = require('helmet');
-require('dotenv').config();
 
 const mongoSanitize = require('express-mongo-sanitize');
 

@@ -9,6 +9,7 @@ const flash = require('connect-flash');
 const ExpressError = require('./utils/ExpressError');
 const methodOverride = require('method-override');
 const helmet = require('helmet');
+require('dotenv').config();
 
 const mongoSanitize = require('express-mongo-sanitize');
 
@@ -16,40 +17,40 @@ const MongoStore = require('connect-mongo');
 
 const app = express();
 
-const dbUrl = 'mongodb://localhost:27017/portfolio'; // Replace this with your actual MongoDB connection string
+// const dbUrl = 'mongodb://localhost:27017/portfolio';
 
-mongoose.connect(dbUrl);
-const db = mongoose.connection;
-db.on("error", console.error.bind(console, "Connection error:"));
-db.once("open", () => {
-    console.log("Database connected.");
-});
-
-
-// const { MongoClient, ServerApiVersion } = require('mongodb');
-// const dbUrl = process.env.DB_URL;
-
-// const client = new MongoClient(dbUrl, {
-//   serverApi: {
-//     version: ServerApiVersion.v1,
-//     strict: true,
-//     deprecationErrors: true,
-//   }
+// mongoose.connect(dbUrl);
+// const db = mongoose.connection;
+// db.on("error", console.error.bind(console, "Connection error:"));
+// db.once("open", () => {
+//     console.log("Database connected.");
 // });
 
-// async function run() {
-//   try {
-//     // Connect the client to the server	(optional starting in v4.7)
-//     await client.connect();
-//     // Send a ping to confirm a successful connection
-//     await client.db("admin").command({ ping: 1 });
-//     console.log("Pinged your deployment. You successfully connected to MongoDB!");
-//   } finally {
-//     // Ensures that the client will close when you finish/error
-//     await client.close();
-//   }
-// }
-// run().catch(console.dir);
+
+const { MongoClient, ServerApiVersion } = require('mongodb');
+const dbUrl = process.env.DB_URL;
+
+const client = new MongoClient(dbUrl, {
+  serverApi: {
+    version: ServerApiVersion.v1,
+    strict: true,
+    deprecationErrors: true,
+  }
+});
+
+async function run() {
+  try {
+    // Connect the client to the server	(optional starting in v4.7)
+    await client.connect();
+    // Send a ping to confirm a successful connection
+    await client.db("admin").command({ ping: 1 });
+    console.log("Pinged your deployment. You successfully connected to MongoDB!");
+  } finally {
+    // Ensures that the client will close when you finish/error
+    await client.close();
+  }
+}
+run().catch(console.dir);
 
 
 app.get('/', (req, res) => {
@@ -100,6 +101,7 @@ const store = MongoStore.create({
 store.on("error", function(e) {
    console.log("Session store error!", e)
 });
+
 
 const sessionConfig = {
     name: 'session',
@@ -166,19 +168,16 @@ app.use(mongoSanitize({
     replaceWith: '_'
 }));
 
-app.get('/', (req, res) => {
-    res.render('home')
-});
-
 app.all('*', (req, res, next) => {
     next(new ExpressError('Page not found', 404));
 });
 
 app.use((err, req, res, next) => {
-    const { statusCode = 500 } = err;
-    if (!err.message) err.message = 'The operation cannot be processed. Check your request.'
-    res.status(statusCode).render('error', { err });
+    const { statusCode = 500, message = 'Internal Server Error' } = err;
+    console.error(err.stack);
+    res.status(statusCode).render('error', { err: { message } });
 });
+
 
 app.listen(3000, () => {
     console.log('Serving on port 3000');

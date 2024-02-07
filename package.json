@@ -20,6 +20,7 @@
     "flash": "^1.1.0",
     "helmet": "^7.1.0",
     "method-override": "^3.0.0",
+    "mongodb": "^6.3.0",
     "mongoose": "^8.1.1"
   }
 }
